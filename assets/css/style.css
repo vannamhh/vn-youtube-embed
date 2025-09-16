@@ -1,0 +1,210 @@
+/**
+ * VN YouTube Embed Styles
+ */
+
+/* Main container */
+.vn-youtube-player {
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	background: #000;
+	/* border-radius: 8px; */
+	overflow: hidden;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+/* Default aspect ratio 16:9 */
+.vn-youtube-player::before {
+	content: '';
+	display: block;
+	padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+/* Thumbnail container */
+.vn-youtube-thumbnail {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Thumbnail image */
+.vn-youtube-thumbnail img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: filter 0.3s ease, transform 0.3s ease;
+	border: none;
+}
+
+/* Hover effects */
+.vn-youtube-player:hover .vn-youtube-thumbnail img {
+	filter: brightness(70%);
+	transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+/* Play button container */
+.vn-youtube-play-button {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.3s ease;
+}
+
+.vn-youtube-player:hover .vn-youtube-play-button {
+	transform: scale(1.1);
+}
+
+/* Custom YouTube-style play button */
+.vn-youtube-play-icon {
+	width: 68px;
+	height: 48px;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+	transition: filter 0.3s ease;
+}
+
+.vn-youtube-player:hover .vn-youtube-play-icon {
+	filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Text play button (fallback) */
+.vn-youtube-play-text {
+	background: rgba(255, 255, 255, 0.9);
+	color: #333;
+	padding: 12px 24px;
+	border-radius: 25px;
+	font-weight: 600;
+	font-size: 16px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+}
+
+.vn-youtube-player:hover .vn-youtube-play-text {
+	background: #fff;
+	transform: scale(1.05);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Video iframe */
+.vn-youtube-player iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	border-radius: 8px;
+}
+
+/* Loading state */
+.vn-youtube-player.loading::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 40px;
+	height: 40px;
+	margin: -20px 0 0 -20px;
+	border: 3px solid #fff;
+	border-top: 3px solid #ff0000;
+	border-radius: 50%;
+	animation: vn-youtube-spin 1s linear infinite;
+	z-index: 3;
+}
+
+/* Loading animation */
+@keyframes vn-youtube-spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+/* Lazy loading placeholder */
+.vn-youtube-player.lazy-load-enabled .vn-youtube-thumbnail img {
+	opacity: 0;
+	transition: all 0.3s ease;
+}
+
+.vn-youtube-player.lazy-load-enabled .vn-youtube-thumbnail img.loaded {
+	opacity: 1;
+}
+
+/* Error state */
+.vn-youtube-player.error {
+	background: #f5f5f5;
+	border: 2px dashed #ccc;
+}
+
+.vn-youtube-player.error::after {
+	content: '⚠️ Error loading video';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #666;
+	font-size: 14px;
+	text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.vn-youtube-play-icon {
+		width: 48px;
+		height: 36px;
+	}
+	
+	.vn-youtube-play-text {
+		padding: 8px 16px;
+		font-size: 14px;
+	}
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.vn-youtube-play-text {
+		background: #fff;
+		color: #000;
+		border: 2px solid #000;
+	}
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.vn-youtube-player,
+	.vn-youtube-thumbnail img,
+	.vn-youtube-play-button,
+	.vn-youtube-play-icon,
+	.vn-youtube-play-text {
+		transition: none;
+	}
+	
+	.vn-youtube-player:hover .vn-youtube-thumbnail img {
+		transform: none;
+	}
+	
+	.vn-youtube-player:hover .vn-youtube-play-button {
+		transform: none;
+	}
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.vn-youtube-player.error {
+		background: #2a2a2a;
+		border-color: #555;
+	}
+	
+	.vn-youtube-player.error::after {
+		color: #ccc;
+	}
+}
