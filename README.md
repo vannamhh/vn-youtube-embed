@@ -65,6 +65,12 @@ Tối ưu hiệu suất WordPress bằng cách thay thế iframe YouTube bằng 
 ]
 ```
 
+### New: Lightbox
+
+- Global toggle in Settings to enable lightbox.
+- Per-shortcode attribute: `lightbox="true|false"` (overrides global).
+- When opening in lightbox, video starts playing immediately if autoplay is enabled.
+
 ### Với UX Builder (Flatsome)
 Nếu bạn sử dụng theme Flatsome, plugin sẽ tự động thêm element "VN YouTube Embed" vào UX Builder.
 

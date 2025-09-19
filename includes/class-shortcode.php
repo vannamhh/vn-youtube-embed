@@ -66,6 +66,10 @@ class VN_YouTube_Embed_Shortcode {
 	 * @return string HTML output.
 	 */
 	public function render_shortcode( $atts ): string {
+		// Get plugin options early to allow dynamic defaults.
+		$options          = get_option( 'vn_youtube_embed_options', array() );
+		$default_lightbox = ! empty( $options['lightbox_enabled'] );
+
 		$atts = shortcode_atts(
 			array(
 				'id'               => '',
@@ -76,6 +80,7 @@ class VN_YouTube_Embed_Shortcode {
 				'quality'          => 'maxresdefault',
 				'autoplay'         => true,
 				'lazy_load'        => true,
+				'lightbox'         => $default_lightbox,
 				'custom_thumbnail' => '',
 				'class'            => '',
 			),
@@ -94,8 +99,10 @@ class VN_YouTube_Embed_Shortcode {
 			return '<p>' . __( 'Invalid YouTube video ID.', 'vn-youtube-embed' ) . '</p>';
 		}
 
-		// Get plugin options.
-		$options = get_option( 'vn_youtube_embed_options', array() );
+		// Normalize booleans possibly passed as strings.
+		$atts['autoplay']  = filter_var( (string) $atts['autoplay'], FILTER_VALIDATE_BOOLEAN );
+		$atts['lazy_load'] = filter_var( (string) $atts['lazy_load'], FILTER_VALIDATE_BOOLEAN );
+		$atts['lightbox']  = filter_var( (string) $atts['lightbox'], FILTER_VALIDATE_BOOLEAN );
 
 		// Use custom thumbnail if provided, otherwise get from cache.
 		$thumbnail_url = ! empty( $atts['custom_thumbnail'] )
@@ -108,6 +115,7 @@ class VN_YouTube_Embed_Shortcode {
 			'data-autoplay'     => $atts['autoplay'] ? '1' : '0',
 			'data-thumbnail'    => esc_url( $thumbnail_url ),
 			'data-custom-thumb' => ! empty( $atts['custom_thumbnail'] ) ? 'true' : 'false',
+			'data-lightbox'     => $atts['lightbox'] ? '1' : '0',
 		);
 
 		// Build CSS classes.
@@ -118,15 +126,30 @@ class VN_YouTube_Embed_Shortcode {
 		if ( $atts['lazy_load'] ) {
 			$css_classes[] = 'lazy-load-enabled';
 		}
+		if ( $atts['lightbox'] ) {
+			$css_classes[] = 'use-lightbox';
+		}
 
-		// Build inline styles.
+		// Build inline styles (width only) and CSS variables (height via ::before).
 		$styles = array();
+
+		$style_vars = array();
 		if ( ! empty( $atts['width'] ) ) {
 			$styles[] = 'width: ' . esc_attr( $atts['width'] );
 		}
 		if ( ! empty( $atts['height'] ) ) {
-			$styles[] = 'height: ' . esc_attr( $atts['height'] );
+			$style_vars[] = '--vn-yt-height: ' . esc_attr( is_numeric( $atts['height'] ) ? ( (string) $atts['height'] . 'px' ) : (string) $atts['height'] );
+			$css_classes[] = 'has-fixed-height';
 		}
+
+		$style_attr_parts = array();
+		if ( ! empty( $styles ) ) {
+			$style_attr_parts[] = implode( '; ', $styles );
+		}
+		if ( ! empty( $style_vars ) ) {
+			$style_attr_parts[] = implode( '; ', $style_vars );
+		}
+		$computed_style_attr = implode( '; ', $style_attr_parts );
 
 		// Generate unique ID for this instance.
 		$unique_id = 'vn-youtube-' . $video_id . '-' . wp_rand( 1000, 9999 );
@@ -137,31 +160,28 @@ class VN_YouTube_Embed_Shortcode {
 			id="<?php echo esc_attr( $unique_id ); ?>"
 			class="<?php echo esc_attr( implode( ' ', $css_classes ) ); ?>"
 			<?php
-			echo implode(
-				' ',
-				array_map(
-					function ( $key, $value ) {
-						return $key . '="' . $value . '"';
-					},
-					array_keys( $data_attrs ),
-					$data_attrs
-				)
-			);
+			foreach ( $data_attrs as $k => $v ) {
+				echo esc_attr( $k ) . '="' . esc_attr( $v ) . '" ';
+			}
 			?>
-			<?php if ( ! empty( $styles ) ) : ?>
-				style="<?php echo esc_attr( implode( '; ', $styles ) ); ?>"
+			<?php if ( ! empty( $computed_style_attr ) ) : ?>
+				style="<?php echo esc_attr( $computed_style_attr ); ?>"
 			<?php endif; ?>
 		>
 			<div class="vn-youtube-thumbnail">
 				<img 
 					src="<?php echo esc_url( $thumbnail_url ); ?>" 
-					alt="<?php echo esc_attr( sprintf( __( 'Video thumbnail for %s', 'vn-youtube-embed' ), $video_id ) ); ?>"
+					<?php
+						/* translators: %s: YouTube video ID. */
+						$alt = sprintf( __( 'Video thumbnail for %s', 'vn-youtube-embed' ), $video_id );
+						echo 'alt="' . esc_attr( $alt ) . '"';
+					?>
 					class="<?php echo $atts['lazy_load'] ? 'lazy-load' : ''; ?>"
 					loading="<?php echo $atts['lazy_load'] ? 'lazy' : 'eager'; ?>"
 				>
 				
 				<div class="vn-youtube-play-button">
-					<?php echo $this->get_play_button_html(); ?>
+					<?php echo wp_kses_post( $this->get_play_button_html() ); ?>
 				</div>
 			</div>
 		</div>
@@ -253,7 +273,7 @@ class VN_YouTube_Embed_Shortcode {
 			';
 		}
 
-		return '<button class="btn-icon circle is-outline is-xlarge"><i class="icon-play" aria-hidden="true" style="font-size:1.5em;"></i></button>';
+		return '<button class="btn-icon circle is-xlarge"><i class="icon-play" aria-hidden="true" style="font-size:1.5em;"></i></button>';
 	}
 
 	/**

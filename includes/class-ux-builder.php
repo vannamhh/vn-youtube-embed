@@ -118,6 +118,12 @@ class VN_YouTube_Embed_UX_Builder {
 						'heading' => __( 'Lazy Loading', 'vn-youtube-embed' ),
 						'default' => 'true',
 					),
+					'lightbox'          => array(
+						'type'    => 'checkbox',
+						'heading' => __( 'Open in Lightbox', 'vn-youtube-embed' ),
+						'description' => __( 'Open the video in a fullscreen lightbox overlay when clicked', 'vn-youtube-embed' ),
+						'default' => 'false',
+					),
 					'css_class'         => array(
 						'type'        => 'textfield',
 						'heading'     => __( 'CSS Class', 'vn-youtube-embed' ),
@@ -198,6 +204,7 @@ class VN_YouTube_Embed_UX_Builder {
 				'height'            => '',
 				'autoplay'          => 'true',
 				'lazy_load'         => 'true',
+				'lightbox'          => 'false',
 				'css_class'         => '',
 			),
 			$atts,
@@ -212,6 +219,7 @@ class VN_YouTube_Embed_UX_Builder {
 			'height'    => $atts['height'],
 			'autoplay'  => 'true' === $atts['autoplay'],
 			'lazy_load' => 'true' === $atts['lazy_load'],
+			'lightbox'  => isset( $atts['lightbox'] ) ? ( 'true' === $atts['lightbox'] ) : false,
 			'class'     => $atts['css_class'],
 		);
 

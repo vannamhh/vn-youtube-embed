@@ -115,6 +115,14 @@ class VN_YouTube_Embed_Admin {
 		);
 
 		add_settings_field(
+			'lightbox_enabled',
+			__( 'Enable Lightbox', 'vn-youtube-embed' ),
+			array( $this, 'render_lightbox_field' ),
+			'vn-youtube-embed',
+			'vn_youtube_embed_general'
+		);
+
+		add_settings_field(
 			'custom_play_button',
 			__( 'Custom Play Button', 'vn-youtube-embed' ),
 			array( $this, 'render_custom_play_button_field' ),
@@ -152,8 +160,8 @@ class VN_YouTube_Embed_Admin {
 					printf(
 						/* translators: %1$d: number of cached files, %2$s: cache size */
 						esc_html__( 'Cached thumbnails: %1$d files (%2$s)', 'vn-youtube-embed' ),
-						$stats['count'],
-						size_format( $stats['size'] )
+						intval( $stats['count'] ),
+						esc_html( size_format( $stats['size'] ) )
 					);
 					?>
 				</p>
@@ -270,6 +278,28 @@ class VN_YouTube_Embed_Admin {
 	}
 
 	/**
+	 * Render lightbox enabled field
+	 */
+	public function render_lightbox_field(): void {
+		$options = get_option( 'vn_youtube_embed_options', array() );
+		$value   = $options['lightbox_enabled'] ?? false;
+		?>
+		<label>
+			<input 
+				type="checkbox" 
+				name="vn_youtube_embed_options[lightbox_enabled]" 
+				value="1"
+				<?php checked( $value ); ?>
+			>
+			<?php esc_html_e( 'Open video in a lightbox overlay', 'vn-youtube-embed' ); ?>
+		</label>
+		<p class="description">
+			<?php esc_html_e( 'When enabled, clicking the thumbnail opens a fullscreen lightbox with the video. Respects the Autoplay setting.', 'vn-youtube-embed' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Render custom play button field
 	 */
 	public function render_custom_play_button_field(): void {
@@ -297,8 +327,8 @@ class VN_YouTube_Embed_Admin {
 	public function sanitize_options( array $input ): array {
 		$sanitized = array();
 
-		$sanitized['thumbnail_quality'] = in_array( 
-			$input['thumbnail_quality'] ?? '', 
+		$sanitized['thumbnail_quality'] = in_array(
+			$input['thumbnail_quality'] ?? '',
 			array( 'maxresdefault', 'sddefault', 'hqdefault', 'mqdefault' ),
 			true
 		) ? $input['thumbnail_quality'] : 'maxresdefault';
@@ -311,6 +341,7 @@ class VN_YouTube_Embed_Admin {
 		$sanitized['lazy_load']          = ! empty( $input['lazy_load'] );
 		$sanitized['autoplay']           = ! empty( $input['autoplay'] );
 		$sanitized['custom_play_button'] = ! empty( $input['custom_play_button'] );
+		$sanitized['lightbox_enabled']   = ! empty( $input['lightbox_enabled'] );
 
 		return $sanitized;
 	}
@@ -328,8 +359,10 @@ class VN_YouTube_Embed_Admin {
 		$cache = VN_YouTube_Embed_Thumbnail_Cache::get_instance();
 		$cache->clear_cache();
 
-		wp_send_json_success( array(
-			'message' => __( 'Cache cleared successfully.', 'vn-youtube-embed' ),
-		) );
+		wp_send_json_success(
+			array(
+				'message' => __( 'Cache cleared successfully.', 'vn-youtube-embed' ),
+			)
+		);
 	}
 }

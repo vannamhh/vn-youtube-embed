@@ -3,7 +3,7 @@
  * Plugin Name: VN YouTube Embed
  * Plugin URI: https://wpmasterynow.com/
  * Description: Tối ưu hiệu suất WordPress bằng cách thay thế iframe YouTube bằng thumbnail tải nhanh, chỉ load video khi người dùng click. Hỗ trợ cache thumbnail và tích hợp UX Builder.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: VN
  * Author URI: https://wpmasterynow.com/
  * License: GPL v2 or later
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'VN_YOUTUBE_EMBED_VERSION', '1.0.0' );
+define( 'VN_YOUTUBE_EMBED_VERSION', '1.1.0' );
 define( 'VN_YOUTUBE_EMBED_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VN_YOUTUBE_EMBED_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'VN_YOUTUBE_EMBED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -165,6 +165,7 @@ final class VN_YouTube_Embed {
 			'cache_duration'     => 30,
 			'autoplay'           => true,
 			'custom_play_button' => true,
+			'lightbox_enabled'   => false,
 		);
 
 		add_option( 'vn_youtube_embed_options', $default_options );

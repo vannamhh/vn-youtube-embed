@@ -145,7 +145,7 @@ class VN_YouTube_Embed_Assets {
 		}
 
 		// Check if shortcode exists in content.
-		return has_shortcode( $post->post_content, 'vn_youtube' ) || 
-			   has_shortcode( $post->post_content, 'youtube_embed' );
+		return has_shortcode( $post->post_content, 'vn_youtube' ) ||
+			has_shortcode( $post->post_content, 'youtube_embed' );
 	}
 }

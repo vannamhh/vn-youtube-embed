@@ -12,6 +12,7 @@
         constructor() {
             this.players = [];
             this.options = window.vnYouTubeEmbed?.options || {};
+            this.lightbox = null;
             this.init();
         }
 
@@ -29,7 +30,17 @@
          */
         bindEvents() {
             $(document).on('click', '.vn-youtube-player', this.handlePlayerClick.bind(this));
+            $(document).on('click', '.vn-youtube-lightbox, .vn-ytb-lightbox-close', this.closeLightbox.bind(this));
+            $(document).on('click', '.vn-youtube-lightbox .vn-youtube-lightbox-content', function(e) {
+                // Prevent closing when clicking inside content.
+                e.stopPropagation();
+            });
             $(window).on('resize', this.debounce(this.handleResize.bind(this), 250));
+            $(document).on('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeLightbox();
+                }
+            });
         }
 
         /**
@@ -133,7 +144,12 @@
                 return;
             }
 
-            this.loadVideo($player);
+            const useLightbox = ($player.data('lightbox') === 1) || $player.hasClass('use-lightbox');
+            if (useLightbox) {
+                this.openLightbox($player.data('video-id'), $player.data('autoplay') === 1);
+            } else {
+                this.loadVideo($player);
+            }
         }
 
         /**
@@ -187,6 +203,45 @@
                 .attr('allowfullscreen', true)
                 .attr('allow', 'autoplay; encrypted-media; picture-in-picture')
                 .attr('title', `YouTube video ${videoId}`);
+        }
+
+        /**
+         * Build and open lightbox overlay with iframe.
+         */
+        openLightbox(videoId, autoplay = true) {
+            if (!videoId) return;
+
+            // Create lightbox container if not exists.
+            if (!this.lightbox) {
+                this.lightbox = $(
+                    '<div class="vn-youtube-lightbox" role="dialog" aria-modal="true" aria-label="YouTube video lightbox">' +
+                        '<div class="vn-youtube-lightbox-content">' +
+                            '<button class="vn-ytb-lightbox-close" aria-label="Close">&times;</button>' +
+                            '<div class="vn-youtube-lightbox-player"></div>' +
+                        '</div>' +
+                    '</div>'
+                ).appendTo('body');
+            }
+
+            // Inject iframe
+            const $playerWrap = this.lightbox.find('.vn-youtube-lightbox-player');
+            $playerWrap.empty().append(this.createIframe(videoId, autoplay));
+
+            // Show
+            this.lightbox.addClass('is-active');
+            $('body').addClass('vn-youtube-no-scroll');
+        }
+
+        /**
+         * Close lightbox and cleanup.
+         */
+        closeLightbox() {
+            if (!this.lightbox) return;
+            this.lightbox.removeClass('is-active');
+            $('body').removeClass('vn-youtube-no-scroll');
+            // Stop video by removing iframe
+            const $playerWrap = this.lightbox.find('.vn-youtube-lightbox-player');
+            $playerWrap.empty();
         }
 
         /**
