@@ -102,6 +102,7 @@ final class VN_YouTube_Embed {
 	private function load_dependencies(): void {
 		require_once VN_YOUTUBE_EMBED_PLUGIN_PATH . 'includes/class-thumbnail-cache.php';
 		require_once VN_YOUTUBE_EMBED_PLUGIN_PATH . 'includes/class-shortcode.php';
+		require_once VN_YOUTUBE_EMBED_PLUGIN_PATH . 'includes/class-video-control-button.php';
 		require_once VN_YOUTUBE_EMBED_PLUGIN_PATH . 'includes/class-assets.php';
 		require_once VN_YOUTUBE_EMBED_PLUGIN_PATH . 'admin/class-admin.php';
 
@@ -115,6 +116,7 @@ final class VN_YouTube_Embed {
 	private function init_components(): void {
 		VN_YouTube_Embed_Thumbnail_Cache::get_instance();
 		VN_YouTube_Embed_Shortcode::get_instance();
+		VN_YouTube_Embed_Video_Control_Button::get_instance();
 		VN_YouTube_Embed_Assets::get_instance();
 		VN_YouTube_Embed_Admin::get_instance();
 

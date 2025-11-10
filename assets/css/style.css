@@ -68,6 +68,11 @@
 	align-items: center;
 	justify-content: center;
 	transition: transform 0.3s ease;
+	width: clamp(6rem, 8.5%, 14rem);
+	height: auto;
+	aspect-ratio: 1 / 1;
+	container-type: inline-size;
+	container-name: play-button-container;
 }
 
 .vn-youtube-player:hover .vn-youtube-play-button {
@@ -84,10 +89,9 @@
 
 .vn-youtube-play-button .btn-icon {
 	margin: 0;
-	font-size: 2.8rem;
-	width: 2em;
-	min-height: 2em;
-	height: 2em;
+	width: 100%;
+	min-height: 100%;
+	height: 100%;
 	padding: 0;
 	display: flex;
 	align-items: center;
@@ -98,10 +102,10 @@
 .vn-youtube-play-button .btn-icon .icon-play {
 	color: #fff;
 	top: 0;
-	left: 4px;
+	left: clamp(1px, 2.857%, 4px);
 	line-height: 1;
-	font-size: 1em !important;
-	font-family: "freshbrand-2" !important;
+	font-size: 50cqw;
+	font-family: "freshbrand-2";
 
 }
 
@@ -146,33 +150,39 @@
 .vn-youtube-lightbox {
 	position: fixed;
 	inset: 0;
-	background: rgba(0,0,0,0.85);
+	background: rgba(0, 0, 0, 0.85);
 	display: none;
 	align-items: center;
 	justify-content: center;
 	z-index: 9999;
 	padding: 20px;
 }
+
 .vn-youtube-lightbox.is-active {
 	display: flex;
 }
+
 .vn-youtube-no-scroll {
 	overflow: hidden !important;
 }
+
 .vn-youtube-lightbox-content {
 	position: relative;
 	width: 100%;
 	max-width: 960px;
 	background: transparent;
 }
+
 .vn-youtube-lightbox-player {
 	position: relative;
 }
+
 .vn-youtube-lightbox-player::before {
 	content: '';
 	display: block;
 	padding-top: 56.25%;
 }
+
 .vn-youtube-lightbox-player iframe {
 	position: absolute;
 	inset: 0;
@@ -180,20 +190,25 @@
 	height: 100%;
 	border: 0;
 }
+
 .vn-ytb-lightbox-close {
 	position: absolute;
-	top: -10px;
-	right: -10px;
+	top: 0;
+	right: -18px;
 	width: 36px;
 	height: 36px;
-	border-radius: 18px;
-	background: rgba(0,0,0,0.6);
+	min-height: auto;
+	padding: 0;
+	margin: 0;
 	color: #fff;
+	background-color: rgb(0 0 0 / 50%);
+	border-radius: 50%;
 	border: 0;
 	line-height: 36px;
 	text-align: center;
 	font-size: 24px;
 	cursor: pointer;
+	z-index: 1;
 }
 
 /* Loading state */
@@ -302,4 +317,282 @@
 	.vn-youtube-player.error::after {
 		color: #ccc;
 	}
+}
+
+/* ============================================
+   Video Control Button Styles
+   ============================================ */
+
+/* Base button styles */
+.vn-youtube-control-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-family: inherit;
+	font-weight: 600;
+	text-decoration: none;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	line-height: 1.5;
+	white-space: nowrap;
+	vertical-align: middle;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.vn-youtube-control-button:focus {
+	outline: 2px solid #ff0000;
+	outline-offset: 2px;
+}
+
+.vn-youtube-control-button:active {
+	transform: scale(0.98);
+}
+
+/* Button sizes */
+.vn-ytb-btn-small {
+	padding: 6px 12px;
+	font-size: 13px;
+	min-height: 32px;
+}
+
+.vn-ytb-btn-medium {
+	padding: 10px 20px;
+	font-size: 15px;
+	min-height: 40px;
+}
+
+.vn-ytb-btn-large {
+	padding: 14px 28px;
+	font-size: 17px;
+	min-height: 48px;
+}
+
+/* Button styles - Primary */
+.vn-ytb-btn-primary {
+	background: #ff0000;
+	color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vn-ytb-btn-primary:hover {
+	background: #cc0000;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+}
+
+.vn-ytb-btn-primary:active {
+	background: #b30000;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles - Secondary */
+.vn-ytb-btn-secondary {
+	background: #333;
+	color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vn-ytb-btn-secondary:hover {
+	background: #555;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+}
+
+.vn-ytb-btn-secondary:active {
+	background: #222;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles - Outline */
+.vn-ytb-btn-outline {
+	background: transparent;
+	color: #ff0000;
+	border: 2px solid #ff0000;
+	box-shadow: none;
+}
+
+.vn-ytb-btn-outline:hover {
+	background: #ff0000;
+	color: #fff;
+	border-color: #ff0000;
+	box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
+	transform: translateY(-1px);
+}
+
+.vn-ytb-btn-outline:active {
+	background: #cc0000;
+	border-color: #cc0000;
+}
+
+/* Button styles - Link */
+.vn-ytb-btn-link {
+	background: transparent;
+	color: #ff0000;
+	box-shadow: none;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.vn-ytb-btn-link:hover {
+	color: #cc0000;
+	text-decoration: underline;
+	transform: none;
+}
+
+.vn-ytb-btn-link:active {
+	color: #b30000;
+}
+
+/* Button icon */
+.vn-ytb-btn-icon {
+	display: inline-flex;
+	align-items: center;
+	font-size: 1.2em;
+}
+
+.vn-ytb-btn-icon::before {
+	display: inline-block;
+}
+
+/* Common icon mappings (if using icon fonts) */
+.icon-play::before {
+	content: '▶';
+}
+
+.icon-pause::before {
+	content: '⏸';
+}
+
+.icon-forward::before {
+	content: '⏩';
+}
+
+.icon-backward::before {
+	content: '⏪';
+}
+
+.icon-replay::before {
+	content: '↻';
+}
+
+.icon-stop::before {
+	content: '⏹';
+}
+
+/* Button label */
+.vn-ytb-btn-label {
+	display: inline-block;
+}
+
+/* Disabled state */
+.vn-youtube-control-button:disabled,
+.vn-youtube-control-button.disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+/* Button group (when multiple buttons are together) */
+.vn-ytb-button-group {
+	display: inline-flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.vn-ytb-btn-small {
+		padding: 5px 10px;
+		font-size: 12px;
+		min-height: 28px;
+	}
+
+	.vn-ytb-btn-medium {
+		padding: 8px 16px;
+		font-size: 14px;
+		min-height: 36px;
+	}
+
+	.vn-ytb-btn-large {
+		padding: 12px 24px;
+		font-size: 16px;
+		min-height: 44px;
+	}
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+	.vn-youtube-control-button {
+		border: 2px solid currentColor;
+	}
+
+	.vn-ytb-btn-primary,
+	.vn-ytb-btn-secondary {
+		border-color: transparent;
+	}
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.vn-youtube-control-button {
+		transition: none;
+	}
+
+	.vn-youtube-control-button:hover {
+		transform: none;
+	}
+}
+
+/* Dark mode support for buttons */
+@media (prefers-color-scheme: dark) {
+	.vn-ytb-btn-secondary {
+		background: #555;
+		color: #fff;
+	}
+
+	.vn-ytb-btn-secondary:hover {
+		background: #666;
+	}
+
+	.vn-ytb-btn-outline {
+		color: #ff4444;
+		border-color: #ff4444;
+	}
+
+	.vn-ytb-btn-outline:hover {
+		background: #ff4444;
+		border-color: #ff4444;
+	}
+
+	.vn-ytb-btn-link {
+		color: #ff4444;
+	}
+
+	.vn-ytb-btn-link:hover {
+		color: #ff6666;
+	}
+}
+
+/* Error state for buttons */
+.vn-youtube-button-error {
+	color: #d32f2f;
+	font-size: 14px;
+	margin-top: 8px;
+	display: block;
+}
+
+/* ============================================
+   Custom Button/Link with Data Attributes or Href
+   ============================================ */
+
+/* Active state when clicked - minimal, non-intrusive */
+.vn-youtube-active {
+	opacity: 0.7 !important;
+	transition: opacity 0.2s ease;
 }

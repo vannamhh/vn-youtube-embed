@@ -273,7 +273,7 @@ class VN_YouTube_Embed_Shortcode {
 			';
 		}
 
-		return '<button class="btn-icon circle is-xlarge"><i class="icon-play" aria-hidden="true" style="font-size:1.5em;"></i></button>';
+		return '<button class="btn-icon circle is-xlarge"><i class="icon-play" aria-hidden="true"></i></button>';
 	}
 
 	/**
