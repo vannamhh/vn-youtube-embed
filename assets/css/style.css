@@ -212,7 +212,7 @@
 }
 
 /* Loading state */
-.vn-youtube-player.loading::after {
+/* .vn-youtube-player.loading::after {
 	content: '';
 	position: absolute;
 	top: 50%;
@@ -225,7 +225,7 @@
 	border-radius: 50%;
 	animation: vn-youtube-spin 1s linear infinite;
 	z-index: 3;
-}
+} */
 
 /* Loading animation */
 @keyframes vn-youtube-spin {
