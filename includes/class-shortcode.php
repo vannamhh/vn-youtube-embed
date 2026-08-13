@@ -181,7 +181,7 @@ class VN_YouTube_Embed_Shortcode {
 				>
 				
 				<div class="vn-youtube-play-button">
-					<?php echo wp_kses_post( $this->get_play_button_html() ); ?>
+					<?php echo wp_kses( $this->get_play_button_html(), $this->get_play_button_allowed_html() ); ?>
 				</div>
 			</div>
 		</div>
@@ -274,6 +274,50 @@ class VN_YouTube_Embed_Shortcode {
 		}
 
 		return '<button class="btn-icon circle is-xlarge"><i class="icon-play" aria-hidden="true"></i></button>';
+	}
+
+	/**
+	 * Allowed HTML for the play button markup.
+	 *
+	 * wp_kses_post() does not allow <svg>/<path>, so the custom play button was
+	 * stripped down to whitespace and no icon rendered. This allowlist keeps the
+	 * output filtered while letting the inline SVG through.
+	 *
+	 * Attribute names are lower-cased by KSES; the HTML parser maps `viewbox`
+	 * back to `viewBox` inside foreign (SVG) content, so the icon still scales.
+	 *
+	 * @return array Allowed tags and attributes.
+	 */
+	private function get_play_button_allowed_html(): array {
+		return array(
+			'svg'    => array(
+				'class'       => true,
+				'viewbox'     => true,
+				'width'       => true,
+				'height'      => true,
+				'xmlns'       => true,
+				'fill'        => true,
+				'focusable'   => true,
+				'aria-hidden' => true,
+			),
+			'path'   => array(
+				'd'    => true,
+				'fill' => true,
+			),
+			'g'      => array(
+				'fill'      => true,
+				'transform' => true,
+			),
+			'button' => array(
+				'class'      => true,
+				'type'       => true,
+				'aria-label' => true,
+			),
+			'i'      => array(
+				'class'       => true,
+				'aria-hidden' => true,
+			),
+		);
 	}
 
 	/**
